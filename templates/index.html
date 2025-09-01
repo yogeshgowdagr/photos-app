@@ -1,0 +1,139 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Photos</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background: #f7f7f7;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background: #4a90e2;
+            color: #fff;
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .container {
+            max-width: 1100px;
+            margin: 30px auto;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            padding: 30px;
+        }
+        .gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+            justify-content: flex-start;
+        }
+        .item {
+            background: #f0f4fa;
+            border-radius: 8px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+            padding: 12px;
+            text-align: center;
+            width: 220px;
+        }
+        img, video {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+        }
+        .item input[type="checkbox"] {
+            margin-bottom: 8px;
+        }
+        .item div {
+            font-size: 15px;
+            color: #333;
+            word-break: break-all;
+        }
+        .actions {
+            margin: 20px 0 0 0;
+            text-align: right;
+        }
+        button {
+            background: #4a90e2;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 22px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: 700;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: #357abd;
+        }
+        .logout {
+            float: right;
+            margin-top: -40px;
+            margin-right: 30px;
+        }
+    </style>
+</head>
+</body>
+<header>
+    <h1>My Photos</h1>
+</header>
+<div class="container">
+    <div class="logout">
+        Welcome, {{ username }}! <a href="/logout" style="color:#fff;text-decoration:underline;">Logout</a>
+    </div>
+    <form id="downloadForm">
+        <div class="gallery">
+            {% for file in files %}
+            <div class="item">
+                <input type="checkbox" name="files" value="{{ file.name }}">
+                {% if file.is_photo %}
+                    <a href="/photo/{{ file.name }}" target="_blank">
+                        <img src="{{ file.thumbnail }}" alt="{{ file.name }}">
+                    </a>
+                {% elif file.is_video %}
+                    <a href="/video/{{ file.name }}" target="_blank">
+                        <video src="/video/{{ file.name }}" controls></video>
+                    </a>
+                {% endif %}
+                <div>{{ file.name }}</div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="actions">
+            <button type="button" onclick="downloadSelected()">Download Selected</button>
+        </div>
+    </form>
+</div>
+<script>
+function downloadSelected() {
+    const checkboxes = document.querySelectorAll('input[name="files"]:checked');
+    checkboxes.forEach(cb => {
+        const fname = cb.value;
+        let url = '';
+        if (fname.match(/\.(jpg|jpeg|png|gif|bmp|webp|heic)$/i)) {
+            url = `/photo/${fname}`;
+        } else if (fname.match(/\.(mp4|mov|avi|mkv)$/i)) {
+            url = `/video/${fname}`;
+        }
+        if (url) {
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fname;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+    });
+}
+</script>
+</body>
+</html>

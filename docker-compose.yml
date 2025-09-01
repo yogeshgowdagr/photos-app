@@ -1,0 +1,11 @@
+version: '3.8'
+services:
+  photo-app:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./static/photos:/app/static/photos
+      - ./static/thumbnails:/app/static/thumbnails
+    environment:
+      - FLASK_ENV=production
