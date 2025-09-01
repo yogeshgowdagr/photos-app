@@ -3,8 +3,12 @@ from PIL import Image
 import pillow_heif
 from config import PHOTO_FOLDER, THUMBNAIL_FOLDER, PHOTO_EXTENSIONS, THUMBNAIL_SIZE
 
+
 # Register HEIF/HEIC opener once at startup
 pillow_heif.register_heif_opener()
+
+# Allow processing of very large images
+Image.MAX_IMAGE_PIXELS = None
 
 def create_thumbnail(filename):
     ext = os.path.splitext(filename)[1].lower()
@@ -33,3 +37,4 @@ def generate_all_thumbnails():
             thumb_path = os.path.join(THUMBNAIL_FOLDER, fname)
             if not os.path.exists(thumb_path):
                 create_thumbnail(fname)
+
