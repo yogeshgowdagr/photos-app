@@ -13,7 +13,7 @@ def create_thumbnail(filename):
 	try:
 		if ext == '.heic':
 			heif_file = pillow_heif.open_heif(src_path)
-			image = Image.fromarray(heif_file[0].data)
+			image = heif_file.to_pillow()
 		else:
 			image = Image.open(src_path)
 		image.thumbnail(THUMBNAIL_SIZE)
